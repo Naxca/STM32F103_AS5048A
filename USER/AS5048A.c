@@ -233,65 +233,6 @@ uint16_t AS5048A_Read_Angle_once_16bit()
 	return data & ~0xC000;
 }
 
-uint16_t AS5048A_read_test(uint16_t registerAddress)
-{
-	uint16_t cnt = 50;
-	uint8_t right_byte;
-	uint8_t left_byte;
-	uint16_t command;
-	uint16_t data;
-	command = 0x4000;
-	command = command | registerAddress;
-
-	//Add a parity bit on the the MSB
-	command |= ((uint16_t)AS5048A_spiCalcEvenParity(command)<<15);
-
-	//Split the command into two bytes
-	right_byte = command & 0xFF;
-	left_byte = ( command >> 8 ) & 0xFF;
-	// printf("%c", left_byte);
-	// printf("%c\r\n", right_byte);
-
-	GPIO_ResetBits(GPIOC,GPIO_Pin_13);
-	// cnt = 50;while(cnt--);
-	// SPI2_ReadWriteByte(0xFF);
-	// SPI2_ReadWriteByte(0xFF);
-	SPI2_ReadWriteByte(left_byte);
-	SPI2_ReadWriteByte(right_byte);
-	GPIO_SetBits(GPIOC,GPIO_Pin_13);
-
-	cnt = 50;while(cnt--);
-
-	GPIO_ResetBits(GPIOC,GPIO_Pin_13);
-	// cnt = 50;while(cnt--);
-	// left_byte = SPI2_ReadWriteByte(0x00);
-	// right_byte = SPI2_ReadWriteByte(0x00);
-	left_byte = SPI2_ReadWriteByte(0xFF);
-	right_byte = SPI2_ReadWriteByte(0xFF);
-
-	GPIO_SetBits(GPIOC,GPIO_Pin_13);
-
-	cnt = 50;while(cnt--);
-
-	// printf("%c", left_byte);
-	// printf("%c\r\n\n", right_byte);
-
-	if (left_byte & 0x40)
-	{
-		printf("Error\n");
-		return 0;
-	}
-	else{
-		// data = (uint16_t)left_byte<<16 + right_byte;
-		// printf("%d\n", left_byte);
-		// printf("%d\n", right_byte);
-		// printf("Test\n");
-		data = (( ( left_byte & 0xFF ) << 8 ) | ( right_byte & 0xFF )) & ~0xC000;
-		printf("%d\r\n", data-8192);
-		return (( ( left_byte & 0xFF ) << 8 ) | ( right_byte & 0xFF )) & ~0xC000;
-	}
-}
-
 /*
  * Read a register from the sensor
  * Takes the address of the register as a 16 bit uint16_t

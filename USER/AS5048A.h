@@ -23,8 +23,6 @@ uint16_t AS5048A_Read_Angle_once(void);
 
 uint16_t AS5048A_Read_Angle_once_16bit(void);
 
-uint16_t AS5048A_read_test(uint16_t registerAddress);
-
 uint16_t AS5048A_read(uint16_t registerAddress);
 
 uint16_t AS5048A_getRawRotation(void);
